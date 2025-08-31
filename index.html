@@ -92,6 +92,11 @@
         <input type="color" id="textColor" value="#000000">
     </div>
     
+    <div class="form-group">
+        <label for="filename">Image filename:</label>
+        <input type="text" id="filename" value="my-image" placeholder="Enter filename (without extension)">
+    </div>
+    
     <button onclick="generateImage()">Generate Image</button>
     <button id="downloadBtn" onclick="downloadImage()" style="display: none;">Download Image</button>
     
@@ -141,8 +146,9 @@
         }
         
         function downloadImage() {
+            const filename = document.getElementById('filename').value || 'generated-image';
             const link = document.createElement('a');
-            link.download = 'generated-image.png';
+            link.download = filename + '.png';
             link.href = canvas.toDataURL();
             link.click();
         }
