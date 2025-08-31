@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Image Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, button {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        input[type="number"], input[type="text"] {
+            width: 200px;
+        }
+        
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        #downloadBtn {
+            background-color: #28a745;
+        }
+        
+        #downloadBtn:hover {
+            background-color: #1e7e34;
+        }
+        
+        #preview {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        canvas {
+            border: 2px solid #ddd;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple Image Generator</h1>
+    
+    <div class="form-group">
+        <label for="width">Width (pixels):</label>
+        <input type="number" id="width" value="400" min="50" max="2000">
+    </div>
+    
+    <div class="form-group">
+        <label for="height">Height (pixels):</label>
+        <input type="number" id="height" value="300" min="50" max="2000">
+    </div>
+    
+    <div class="form-group">
+        <label for="text">Text to display:</label>
+        <input type="text" id="text" value="Hello World!" placeholder="Enter your text">
+    </div>
+    
+    <div class="form-group">
+        <label for="bgColor">Background Color:</label>
+        <input type="color" id="bgColor" value="#ffffff">
+    </div>
+    
+    <div class="form-group">
+        <label for="textColor">Text Color:</label>
+        <input type="color" id="textColor" value="#000000">
+    </div>
+    
+    <button onclick="generateImage()">Generate Image</button>
+    <button id="downloadBtn" onclick="downloadImage()" style="display: none;">Download Image</button>
+    
+    <div id="preview">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <script>
+        let canvas = document.getElementById('canvas');
+        let ctx = canvas.getContext('2d');
+        
+        function generateImage() {
+            const width = parseInt(document.getElementById('width').value);
+            const height = parseInt(document.getElementById('height').value);
+            const text = document.getElementById('text').value;
+            const bgColor = document.getElementById('bgColor').value;
+            const textColor = document.getElementById('textColor').value;
+            
+            // Set canvas dimensions
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Fill background
+            ctx.fillStyle = bgColor;
+            ctx.fillRect(0, 0, width, height);
+            
+            // Set text properties
+            ctx.fillStyle = textColor;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Calculate font size based on canvas size
+            let fontSize = Math.min(width, height) * 0.1;
+            ctx.font = fontSize + 'px Arial';
+            
+            // Adjust font size if text is too wide
+            while (ctx.measureText(text).width > width * 0.9 && fontSize > 10) {
+                fontSize -= 2;
+                ctx.font = fontSize + 'px Arial';
+            }
+            
+            // Draw text in center
+            ctx.fillText(text, width / 2, height / 2);
+            
+            // Show download button
+            document.getElementById('downloadBtn').style.display = 'inline-block';
+        }
+        
+        function downloadImage() {
+            const link = document.createElement('a');
+            link.download = 'generated-image.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        // Generate initial image
+        generateImage();
+    </script>
+</body>
+</html>
